@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Үйлену Тойына Шақыру</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- БАЗАЛЫҚ СТИЛЬДЕР --- */
+        :root {
+            --gold: #D4AF37;
+            --cream: #FAF9F6;
+            --dark: #2C3E50;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: var(--dark);
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        h1, h2, h3 { font-family: 'Cormorant Garamond', serif; font-weight: 700; color: var(--dark); margin: 0; }
+        p { line-height: 1.6; font-size: 16px; margin-bottom: 15px; }
+
+        /* --- АНИМАЦИЯ --- */
+        .fade-up { opacity: 0; transform: translateY(30px); transition: all 1s ease-out; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* --- МУЗЫКА ТҮЙМЕСІ --- */
+        .music-btn {
+            position: fixed; top: 20px; right: 20px; z-index: 1000;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: white; border: 2px solid var(--gold);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            animation: spin 4s linear infinite;
+            animation-play-state: paused;
+        }
+        .music-btn.playing { animation-play-state: running; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* --- БАСҚЫ БЕТ (HERO) --- */
+        .hero {
+            height: 100vh;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            /* ФОТО ИЗ ИНТЕРНЕТА (РАБОТАЕТ СРАЗУ) */
+            background: url('https://images.unsplash.com/photo-1529636721158-b851fd68171c?q=80&w=1974&auto=format&fit=crop') no-repeat center/cover;
+            position: relative; color: white;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3); /* Немного затемняем фото */
+        }
+        .hero-content { position: relative; z-index: 2; border: 2px solid rgba(255,255,255,0.7); padding: 40px 20px; margin: 20px; backdrop-filter: blur(2px); }
+        
+        .names { font-size: clamp(40px, 8vw, 70px); line-height: 1.2; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+        .date { font-size: 24px; border-top: 1px solid white; border-bottom: 1px solid white; display: inline-block; padding: 10px 20px; margin-top: 20px; }
+
+        /* --- ШАҚЫРУ МӘТІНІ --- */
+        .invite-section { padding: 60px 20px; background: white; }
+        .bismillah { width: 200px; margin-bottom: 20px; filter: opacity(0.8); }
+
+        /* --- ТАЙМЕР --- */
+        .timer-box {
+            display: flex; justify-content: center; gap: 15px; margin: 40px 0;
+        }
+        .time-unit {
+            background: var(--cream); border: 1px solid var(--gold);
+            padding: 15px; min-width: 70px; border-radius: 10px;
+        }
+        .time-val { font-size: 28px; font-weight: bold; color: var(--gold); display: block; }
+        .time-label { font-size: 12px; text-transform: uppercase; }
+
+        /* --- БАҒДАРЛАМА --- */
+        .timeline { padding: 60px 20px; background-color: var(--cream); }
+        .event-item { margin-bottom: 30px; position: relative; padding-left: 20px; border-left: 2px solid var(--gold); }
+        .event-time { font-weight: bold; color: var(--gold); font-size: 20px; }
+        .event-title { font-size: 18px; font-weight: 600; margin-top: 5px; }
+
+        /* --- КАРТА ЖӘНЕ WHATSAPP --- */
+        .location { padding: 60px 20px; }
+        .btn {
+            display: inline-block; padding: 15px 40px; 
+            background: var(--gold); color: white; 
+            text-decoration: none; font-weight: bold; 
+            border-radius: 50px; margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3);
+            transition: transform 0.2s;
+        }
+        .btn:active { transform: scale(0.95); }
+        .btn-outline { background: transparent; border: 2px solid var(--gold); color: var(--gold); margin-top: 10px; }
+
+        /* --- FOOTER --- */
+        footer { padding: 30px; background: var(--dark); color: white; font-size: 14px; }
+
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+    <div class="music-btn" onclick="toggleMusic()">🎵</div>
+
+    <div class="hero">
+        <div class="hero-content fade-up">
+            <p>Үйлену тойына шақыру</p>
+            <h1 class="names">Айтуар <br> & <br> Жанбота</h1>
+            <div class="date">25.08.2026</div>
+        </div>
+    </div>
+
+    <section class="invite-section fade-up">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Bismillah.svg/1200px-Bismillah.svg.png" class="bismillah" alt="Bismillah">
+        
+        <h2>Құрметті ағайын-туыс, бауырлар, достар!</h2>
+        <br>
+        <p>Сіздерді ұлымыз Айтуар мен келініміз Жанботаның үйлену тойына арналған салтанатты дастарханымыздың қадірлі қонағы болуға шақырамыз!</p>
+        <p>Басталуы: 18:00</p>
+
+        <div class="timer-box">
+            <div class="time-unit"><span class="time-val" id="days">00</span><span class="time-label">Күн</span></div>
+            <div class="time-unit"><span class="time-val" id="hours">00</span><span class="time-label">Сағ</span></div>
+            <div class="time-unit"><span class="time-val" id="minutes">00</span><span class="time-label">Мин</span></div>
+            <div class="time-unit"><span class="time-val" id="seconds">00</span><span class="time-label">Сек</span></div>
+        </div>
+    </section>
+
+    <section class="timeline fade-up">
+        <h2>Той бағдарламасы</h2><br>
+        <div class="event-item">
+            <div class="event-time">18:00</div>
+            <div class="event-title">Қонақтардың жиналуы 📸</div>
+        </div>
+        <div class="event-item">
+            <div class="event-time">19:00</div>
+            <div class="event-title">Беташар рәсімі 🎀</div>
+        </div>
+        <div class="event-item">
+            <div class="event-time">20:00</div>
+            <div class="event-title">Ақ дастархан 🍽️</div>
+        </div>
+    </section>
+
+    <section class="location fade-up">
+        <h2>Мекен-жайымыз</h2>
+        <p>Атырау қаласы, "Салтанат" мейрамханасы</p>
+        
+        <a href="https://2gis.kz/atyrau" target="_blank" class="btn btn-outline">📍 Картадан ашу (2GIS)</a>
+        
+        <br><br><br>
+        <hr style="width: 50%; border: 1px solid #ddd; margin: 0 auto;">
+        <br><br>
+
+        <h2>Тойға келесіз бе?</h2>
+        <p>Біз сізді асыға күтеміз! Төмендегі түймені басып, растауыңызды сұраймыз.</p>
+        
+        <a href="#" onclick="sendWhatsapp(87755592482)" class="btn">✅ Келемін (WhatsApp)</a>
+    </section>
+
+    <footer>
+        <p>Тойда кездескенше! <br> Айтуар & Жанбота</p>
+    </footer>
+
+    <script>
+        // АНИМАЦИЯЛАР (Жанды ету үшін)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        });
+        document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+        // ТАЙМЕР
+        const weddingDate = new Date("2026-08-25T18:00:00").getTime();
+
+        const timer = setInterval(function() {
+            const now = new Date().getTime();
+            const distance = weddingDate - now;
+
+            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = d;
+            document.getElementById("hours").innerText = h;
+            document.getElementById("minutes").innerText = m;
+            document.getElementById("seconds").innerText = s;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                document.querySelector(".timer-box").innerHTML = "<h3>Той басталды! 🎉</h3>";
+            }
+        }, 1000);
+
+        // МУЗЫКА
+        const music = document.getElementById("bgMusic");
+        const musicBtn = document.querySelector(".music-btn");
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicBtn.classList.remove("playing");
+                musicBtn.innerHTML = "🔇"; // Дыбыс өшіру иконкасы
+            } else {
+                music.play().catch(e => console.log("Автоплей бұғатталған, қолмен басу керек"));
+                musicBtn.classList.add("playing");
+                musicBtn.innerHTML = "🎵"; // Ойнату иконкасы
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // WHATSAPP
+        function sendWhatsapp() {
+            let name = prompt("Аты-жөніңізді жазыңыз:");
+            if (name) {
+                let phone = "87755592482"; // Өз нөміріңізді жазыңыз
+                let text = `Сәлем! Мен, ${name}, Айтуар мен Жанботаның тойына келемін! 🎉`;
+                let url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+                window.open(url, '_blank');
+            }
+        }
+    </script>
+</body>
+</html>
